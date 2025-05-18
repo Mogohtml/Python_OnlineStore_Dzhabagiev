@@ -1,0 +1,6 @@
+<h1>Order list:</h1>
+<ul>
+    {% for order in orders %}
+    <li>{{ order.customer.last_name }} {{ order.product.name }}</li>
+    {% endfor}
+</ul>

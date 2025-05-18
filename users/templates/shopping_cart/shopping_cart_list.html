@@ -1,0 +1,10 @@
+<h1>Shopping cart list:</h1>
+<ul>
+    {% for cart in shopping_carts %}
+    <li>{{ cart.customer.last_name }} {{ cart.customer.first_name }}
+        {% if cart.customer.patronymic %}
+            {{ cart.customer.patronymic }}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
