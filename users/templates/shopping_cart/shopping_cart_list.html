@@ -1,10 +1,9 @@
-<h1>Shopping cart list:</h1>
+<h1>Shopping Carts</h1>
 <ul>
     {% for cart in shopping_carts %}
-    <li>{{ cart.customer.last_name }} {{ cart.customer.first_name }}
-        {% if cart.customer.patronymic %}
-            {{ cart.customer.patronymic }}
-        {% endif %}
-    </li>
+        <li>
+            <a href="{% url 'shopping_cart_detail' cart.pk %}">{{ cart.customer }} {{ cart.product }} {{ cart.quantity }}</a>
+        </li>
     {% endfor %}
 </ul>
+<a href="{% url 'create_shopping_cart' %}">Create Shopping Cart</a>

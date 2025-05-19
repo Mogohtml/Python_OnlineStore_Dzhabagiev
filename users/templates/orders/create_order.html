@@ -1,0 +1,6 @@
+<h1>Оформить заказ</h1>
+<form method="post" action="{% url 'create_order.html' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Оформить заказ">
+</form>

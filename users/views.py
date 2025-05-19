@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Product, Category, Customer, Inventory, ShoppingCart, Order
-from .forms import CartForm
+from .forms import CartForm, OrderForm, ProductForm, CategoryForm, CustomerForm, InventoryForm
 
 
 # Create your views here.
@@ -14,6 +14,16 @@ def product_detail(request, pk):
     context = {"product": product}
     return render(request, "products/product_detail.html", context)
 
+def create_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("product_list")
+    else:
+        form = ProductForm()
+    return render(request, "products/create_product.html", {"form": form})
+
 
 def category_list(request):
     categories = Category.objects.all()
@@ -25,6 +35,16 @@ def category_detail(request, pk):
     context = {"category": category}
     return render(request, "categories/category_detail.html", context)
 
+def create_category(request):
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("category_list")
+    else:
+        form = CategoryForm()
+    return render(request, "categories/create_category.html", {"form": form})
+
 
 def customer_list(request):
     customers = Customer.objects.all()
@@ -32,9 +52,19 @@ def customer_list(request):
     return render(request, "customers/customer_list.html", context)
 
 def customer_detail(request, pk):
-    customer = Customer.objects.get(pk.pk)
+    customer = Customer.objects.get(pk=pk)
     context = {'customer': customer}
     return render(request, 'customers/customer_detail.html', context)
+
+def create_customer(request):
+    if request.method == "POST":
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("customer_list")
+    else:
+        form = CustomerForm()
+    return render(request, "customers/create_customer.html", {"form": form})
 
 
 def inventory_list(request):
@@ -47,6 +77,16 @@ def inventory_detail(request, pk):
     context = {'inventory': inventory}
     return render(request, 'inventories/inventory_detail.html', context)
 
+def create_inventory(request):
+    if request.method == "POST":
+        form = InventoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("inventory_list")
+    else:
+        form = InventoryForm()
+    return render(request, "inventories/create_inventory.html", {"form": form})
+
 
 def shopping_cart_list(request):
     carts = ShoppingCart.objects.all()
@@ -57,6 +97,21 @@ def shopping_cart_detail(request, pk):
     cart = ShoppingCart.objects.get(pk=pk)
     context = {'shopping_cart': cart}
     return render(request , "shopping_cart/shopping_cart_detail.html", context)
+
+def add_to_cart(request):
+    if request.method == "POST":
+        form = CartForm(request.POST)
+        if form.is_valid():
+            product = form.cleaned_data['product']
+            quantity = form.cleaned_data['quantity']
+            customer = form.cleaned_data['customer']
+            cart, created = ShoppingCart.objects.get_or_create(customer=customer, product=product)
+            cart.quantity = quantity
+            cart.save()
+            return redirect('shopping_cart_detail', pk=cart.pk)
+        else:
+            form = CartForm()
+    return render(request, "shopping_cart/add_to_cart.html", {"form": form})
 
 
 def order_list(request):
@@ -69,18 +124,19 @@ def order_detail(request, pk):
     context = {'order': order}
     return render(request, "orders/order_detail.html", context)
 
-def add_to_cart(request):
+def create_order(request):
     if request.method == "POST":
-        form = CartForm(request.POST)
+        form = OrderForm(request.POST)
         if form.is_valid():
+            customer = form.cleaned_data['customer']
             product = form.cleaned_data['product']
             quantity = form.cleaned_data['quantity']
-            card, created = ShoppingCart.objects.get_or_create(user=request.user)
-            card.add_item(product, quantity)
-            return redirect('cart')
-        else:
-            form = CartForm()
-    return render(request, "add_to_cart.html", {"form": form})
-
-
+            order_date = form.cleaned_data['order_date']
+            status = form.cleaned_data['status']
+            cart = form.cleaned_data['cart']
+            order = Order.objects.create(customer=customer, product=product, quantity=quantity, order_date=order_date, status=status)
+            return redirect('order_detail', pk=order.pk)
+    else:
+        form = OrderForm()
+    return render(request, "orders/create_order.html",  {"form": form})
 
