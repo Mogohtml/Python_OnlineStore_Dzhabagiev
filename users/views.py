@@ -76,16 +76,6 @@ def customer_detail(request, pk):
     context = {'customer': customer}
     return render(request, 'customers/customer_detail.html', context)
 
-def create_customer(request):
-    if request.method == "POST":
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("customer_list")
-    else:
-        form = CustomerForm()
-    return render(request, "customers/create_customer.html", {"form": form})
-
 
 def inventory_list(request):
     inventories = Inventory.objects.all()
@@ -96,16 +86,6 @@ def inventory_detail(request, pk):
     inventory = Inventory.objects.get(pk=pk)
     context = {'inventory': inventory}
     return render(request, 'inventories/inventory_detail.html', context)
-
-def create_inventory(request):
-    if request.method == "POST":
-        form = InventoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("inventory_list")
-    else:
-        form = InventoryForm()
-    return render(request, "inventories/create_inventory.html", {"form": form})
 
 
 def shopping_cart_list(request):
