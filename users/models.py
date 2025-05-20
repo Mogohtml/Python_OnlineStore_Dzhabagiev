@@ -11,6 +11,7 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=7, decimal_places=2)
+    quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     image = models.ImageField(upload_to="products/", null=True, blank=True)
     category = models.ForeignKey("Category", on_delete=models.PROTECT)
 
@@ -40,11 +41,11 @@ class Customer(models.Model):
         verbose_name_plural = "Customers"
 
 class Inventory(models.Model):
-    products = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f"{self.products} {self.quantity}"
+        return f"{self.product} {self.quantity}"
 
 class ShoppingCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -57,7 +58,7 @@ class ShoppingCart(models.Model):
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50)
 

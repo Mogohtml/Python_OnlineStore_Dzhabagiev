@@ -36,7 +36,7 @@ class OrderForm(forms.Form):
     customer = forms.ModelChoiceField(queryset=Customer.objects.all())
     product = forms.ModelChoiceField(queryset=Product.objects.all())
     quantity = forms.IntegerField(min_value=1)
-    order_date = forms.DateTimeField(auto_now_add=True)
+    order_date = forms.DateTimeField()
     status = forms.CharField(max_length=50)
     cart = forms.ModelChoiceField(queryset=ShoppingCart.objects.all())
 

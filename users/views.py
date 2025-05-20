@@ -34,17 +34,6 @@ def product_detail(request, pk):
     context = {"product": product}
     return render(request, "products/product_detail.html", context)
 
-def create_product(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("product_list")
-    else:
-        form = ProductForm()
-    return render(request, "products/create_product.html", {"form": form})
-
-
 def category_list(request):
     categories = Category.objects.all()
     context = {"categories": categories}
@@ -54,17 +43,6 @@ def category_detail(request, pk):
     category = Category.objects.get(pk=pk)
     context = {"category": category}
     return render(request, "categories/category_detail.html", context)
-
-def create_category(request):
-    if request.method == "POST":
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("category_list")
-    else:
-        form = CategoryForm()
-    return render(request, "categories/create_category.html", {"form": form})
-
 
 def customer_list(request):
     customers = Customer.objects.all()
