@@ -6,24 +6,22 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     pass
 
-
-class Product(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=7, decimal_places=2)
-    quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    image = models.ImageField(upload_to="products/", null=True, blank=True)
-    category = models.ForeignKey("Category", on_delete=models.PROTECT)
-
-    def __str__(self):
-      return self.name
-
-
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    image = models.ImageField(upload_to="products/", null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+      return self.name
+
 
 class Customer(models.Model):
     last_name = models.CharField(max_length=255)
@@ -50,7 +48,7 @@ class Inventory(models.Model):
 class ShoppingCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    quantity = models.IntegerField(validators=[MinValueValidator(1)], default=1)
 
     def __str__(self):
         return f"{self.customer} {self.product} {self.quantity}"
@@ -60,7 +58,8 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     order_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default="На рассмотрении")
+    cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.customer} {self.product} {self.quantity}"

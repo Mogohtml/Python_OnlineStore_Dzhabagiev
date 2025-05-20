@@ -1,11 +1,12 @@
 from django import forms
-from .models import Product, Customer, ShoppingCart, Category, Inventory
+from .models import Product, Customer, ShoppingCart, Category, Inventory, Order
+import datetime
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'quantity', 'image', 'category']
+        fields = ['name', 'description', 'price', 'image', 'category']
 
 
 class CategoryForm(forms.ModelForm):
@@ -26,18 +27,13 @@ class InventoryForm(forms.ModelForm):
         fields = ['product', 'quantity']
 
 
-class CartForm(forms.Form):
-    product = forms.ModelChoiceField(queryset=Product.objects.all())
-    quantity = forms.IntegerField(min_value=1)
-    customer = forms.ModelChoiceField(queryset=Customer.objects.all())
+class CartForm(forms.ModelForm):
+    class Meta:
+        model = ShoppingCart
+        fields = ['customer', 'product', 'quantity']
 
 
-class OrderForm(forms.Form):
-    customer = forms.ModelChoiceField(queryset=Customer.objects.all())
-    product = forms.ModelChoiceField(queryset=Product.objects.all())
-    quantity = forms.IntegerField(min_value=1)
-    order_date = forms.DateTimeField()
-    status = forms.CharField(max_length=50)
-    cart = forms.ModelChoiceField(queryset=ShoppingCart.objects.all())
-
-
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['customer', 'product', 'quantity', 'cart']

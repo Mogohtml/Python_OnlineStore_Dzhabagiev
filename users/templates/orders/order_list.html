@@ -4,6 +4,6 @@
     <li>
         <a href="{% url 'order_detail' order.pk %}">{{ order.customer }} {{ order.product }} {{ order.quantity }} {{ order.status }}</a>
     </li>
-    {% endfor}
+    {% endfor %}
 </ul>
 <a href="{% url 'create_order' %}">Create Order</a>

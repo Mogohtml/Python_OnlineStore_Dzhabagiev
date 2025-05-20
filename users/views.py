@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from django.utils import timezone
+
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Category, Customer, Inventory, ShoppingCart, Order
-from .forms import CartForm, OrderForm, ProductForm, CategoryForm, CustomerForm, InventoryForm
+from .forms import CartForm, OrderForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
@@ -80,15 +82,11 @@ def add_to_cart(request):
     if request.method == "POST":
         form = CartForm(request.POST)
         if form.is_valid():
-            product = form.cleaned_data['product']
-            quantity = form.cleaned_data['quantity']
-            customer = form.cleaned_data['customer']
-            cart, created = ShoppingCart.objects.get_or_create(customer=customer, product=product)
-            cart.quantity = quantity
+            cart = form.save(commit=False)
             cart.save()
             return redirect('shopping_cart_detail', pk=cart.pk)
-        else:
-            form = CartForm()
+    else:
+        form = CartForm()
     return render(request, "shopping_cart/add_to_cart.html", {"form": form})
 
 
@@ -106,13 +104,17 @@ def create_order(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
-            customer = form.cleaned_data['customer']
-            product = form.cleaned_data['product']
-            quantity = form.cleaned_data['quantity']
-            order_date = form.cleaned_data['order_date']
-            status = form.cleaned_data['status']
-            cart = form.cleaned_data['cart']
-            order = Order.objects.create(customer=customer, product=product, quantity=quantity, order_date=order_date, status=status)
+            order = form.save(commit=False)
+            order.order_date = timezone.now()
+            order.status = "На рассмотрении"
+            order.save()
+
+            # Уменьшение остатков после офрмления заказа
+            product = order.product
+            inventory = get_object_or_404(Inventory, product= product)
+            inventory.quantity -= order.quantity
+            inventory.save()
+
             return redirect('order_detail', pk=order.pk)
     else:
         form = OrderForm()

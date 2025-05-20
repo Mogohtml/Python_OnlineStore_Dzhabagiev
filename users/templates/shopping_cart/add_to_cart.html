@@ -1,6 +1,6 @@
 <h1>Добавить в корзину</h1>
 <form method="post" action="{% url 'add_to_cart' %}">
     {% csrf_token %}
-    {% form.as_p %}
+    {{ form.as_p }}
     <input type="submit" value="Добавить в корзину">
 </form>
