@@ -1,0 +1,10 @@
+<p><strong>Customer last name:</strong>{{ order.customer.last_name }}</p>
+<p><strong>Customer name:</strong>{{ order.customer.first_name }}</p>
+
+{% if order.customer.patronymic %}
+    <p><strong>Customer patronymic:</strong> {{ order.customer.patronymic }}</p>
+{% endif %}
+<p><strong>Product name:</strong>{{ order.product.name }}</p>
+<p><strong>Quantity:</strong>{{ order.quantity }}</p>
+<p><strong></strong>{{ order.order_date }}</p>
+<p><strong></strong>{{ order.status }}</p>
