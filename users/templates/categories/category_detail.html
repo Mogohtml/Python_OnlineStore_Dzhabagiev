@@ -1,2 +1,13 @@
-<h1>Category of product:</h1>
-{{ category.name }}
+{% extends 'base.html' %}
+
+{% block title %}Category details:{% endblock %}
+
+{% block content %}
+<div class="category-detail-row row">
+    <div class="category-detail-col col-md-12">
+        <h1>Category of product:</h1>
+        {{ category.name }}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,10 +1,20 @@
-<p><strong>Customer last name:</strong>{{ order.customer.last_name }}</p>
-<p><strong>Customer name:</strong>{{ order.customer.first_name }}</p>
+{% extends 'base.html' %}
 
-{% if order.customer.patronymic %}
-    <p><strong>Customer patronymic:</strong> {{ order.customer.patronymic }}</p>
-{% endif %}
-<p><strong>Product name:</strong>{{ order.product.name }}</p>
-<p><strong>Quantity:</strong>{{ order.quantity }}</p>
-<p><strong></strong>{{ order.order_date }}</p>
-<p><strong></strong>{{ order.status }}</p>
+{% block title %}Order details:{% endblock %}
+
+{% block content %}
+<div class="order-detail-row row">
+    <div class="order-detail-col col-md-12">
+        <p><strong>Customer last name:</strong>{{ order.customer.last_name }}</p>
+        <p><strong>Customer name:</strong>{{ order.customer.first_name }}</p>
+
+        {% if order.customer.patronymic %}
+            <p><strong>Customer patronymic:</strong> {{ order.customer.patronymic }}</p>
+        {% endif %}
+        <p><strong>Product name:</strong>{{ order.product.name }}</p>
+        <p><strong>Quantity:</strong>{{ order.quantity }}</p>
+        <p><strong></strong>{{ order.order_date }}</p>
+        <p><strong></strong>{{ order.status }}</p>
+    </div>
+</div>
+{% endblock %}

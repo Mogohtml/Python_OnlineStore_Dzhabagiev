@@ -1,9 +1,19 @@
-<h1>Shopping Carts</h1>
-<ul>
-    {% for cart in shopping_carts %}
-        <li>
-            <a href="{% url 'shopping_cart_detail' cart.pk %}">{{ cart.customer }} {{ cart.product }} {{ cart.quantity }}</a>
-        </li>
-    {% endfor %}
-</ul>
-<a href="{% url 'add_to_cart' %}">Create Shopping Cart</a>
+{% extends 'base.html' %}
+
+{% block title %}Shopping Carts{% endblock %}
+
+{% block content %}
+<div class="cart-list-row row">
+    <div class="cart-list-col col-md-12">
+        <h1>Shopping Carts</h1>
+        <ul>
+            {% for cart in shopping_carts %}
+                <li>
+                    <a href="{% url 'shopping_cart_detail' cart.pk %}">{{ cart.customer }} {{ cart.product }} {{ cart.quantity }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'add_to_cart' %}">Create Shopping Cart</a>
+    </div>
+</div>
+{% endblock %}

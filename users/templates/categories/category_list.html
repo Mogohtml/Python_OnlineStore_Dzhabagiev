@@ -1,8 +1,18 @@
-<h1>Category list</h1>
-<ul>
-    {% for category in categories %}
-    <li>
-        <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
-    </li>
-    {% endfor %}
-</ul>
+{% extends 'base.html' %}
+
+{% block title %}Category list:{% endblock %}
+
+{% block content %}
+<div class="category-list-row row">
+    <div class="category-list-col col-md-12">
+        <h1>Category list</h1>
+        <ul>
+            {% for category in categories %}
+            <li>
+                <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

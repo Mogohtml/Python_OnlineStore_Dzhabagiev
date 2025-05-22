@@ -1,8 +1,18 @@
-<h1>Customer list:</h1>
-<ul>
-    {% for customer in customers %}
-    <li>
-        <a href="{% url 'customer_detail' customer.pk %}">{{ customer.last_name }} {{ customer.first_name }}</a>
-    </li>
-    {% endfor %}
-</ul>
+{% extends 'base.html' %}
+
+{% block title %}Customer list:{% endblock %}
+
+{% block content %}
+<div class="customer-list-row row">
+    <div class="customer-list-col col-md-12">
+        <h1>Customer list:</h1>
+        <ul>
+            {% for customer in customers %}
+            <li>
+                <a href="{% url 'customer_detail' customer.pk %}">{{ customer.last_name }} {{ customer.first_name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
