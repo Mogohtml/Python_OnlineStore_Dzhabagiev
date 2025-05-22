@@ -1,9 +1,19 @@
-<h1>Order list:</h1>
-<ul>
-    {% for order in orders %}
-    <li>
-        <a href="{% url 'order_detail' order.pk %}">{{ order.customer }} {{ order.product }} {{ order.quantity }} {{ order.status }}</a>
-    </li>
-    {% endfor %}
-</ul>
-<a href="{% url 'create_order' %}">Create Order</a>
+{% extends 'base.html' %}
+
+{% block title %}Order list:{% endblock %}
+
+{% block content %}
+<div class="order-list-row row">
+    <div class="order-list-col col-md-12">
+        <h1>Order list:</h1>
+        <ul>
+            {% for order in orders %}
+            <li>
+                <a href="{% url 'order_detail' order.pk %}">{{ order.customer }} {{ order.product }} {{ order.quantity }} {{ order.status }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'create_order' %}">Create Order</a>
+    </div>
+</div>
+{% endblock %}

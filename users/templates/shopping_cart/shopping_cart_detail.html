@@ -1,3 +1,14 @@
-<p><strong>Customer:</strong> {{ shopping_cart.customer }}</p>
-<p><strong>Product:</strong> {{ shopping_cart.product }}</p>
-<p><strong>Quantity:</strong> {{ shopping_cart.quantity }}</p>
+{% extends 'base.html' %}
+
+{% block title %}Shopping cart details{% endblock %}
+
+{% block content %}
+<div class="cart-detail-row row">
+    <div class="cart-detail-col col-md-12">
+        <p><strong>Customer:</strong> {{ shopping_cart.customer }}</p>
+        <p><strong>Product:</strong> {{ shopping_cart.product }}</p>
+        <p><strong>Quantity:</strong> {{ shopping_cart.quantity }}</p>
+    </div>
+</div>
+{% endblock %}
+

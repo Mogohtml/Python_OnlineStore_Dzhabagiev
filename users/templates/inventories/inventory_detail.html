@@ -1,2 +1,13 @@
-<p><strong>Product:</strong> {{ inventory.product.name }}</p>
-<p><strong>Quantity:</strong>{{ inventory.quantity }}</p>
+{% extends 'base.html' %}
+
+{% block title %}Inventory details:{% endblock %}
+
+{% block content %}
+<div class="inventory-detail-row row">
+    <div class="inventory-detail-col col-md-12">
+        <p><strong>Product:</strong> {{ inventory.product.name }}</p>
+        <p><strong>Quantity:</strong>{{ inventory.quantity }}</p>
+    </div>
+</div>
+{% endblock %}
+
