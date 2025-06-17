@@ -31,25 +31,30 @@ def product_list(request):
     context = {"products": products}
     return render(request, "products/product_list.html", context)
 
+
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     context = {"product": product}
     return render(request, "products/product_detail.html", context)
+
 
 def category_list(request):
     categories = Category.objects.all()
     context = {"categories": categories}
     return render(request, "categories/category_list.html", context)
 
+
 def category_detail(request, pk):
     category = Category.objects.get(pk=pk)
     context = {"category": category}
     return render(request, "categories/category_detail.html", context)
 
+
 def customer_list(request):
     customers = Customer.objects.all()
     context = {"customers": customers}
     return render(request, "customers/customer_list.html", context)
+
 
 def customer_detail(request, pk):
     customer = Customer.objects.get(pk=pk)
@@ -62,6 +67,7 @@ def inventory_list(request):
     context = {"inventories": inventories}
     return render(request, 'inventories/inventory_list.html', context)
 
+
 def inventory_detail(request, pk):
     inventory = Inventory.objects.get(pk=pk)
     context = {'inventory': inventory}
@@ -73,17 +79,36 @@ def shopping_cart_list(request):
     context = {"shopping_carts": carts}
     return render(request, 'shopping_cart/shopping_cart_list.html', context)
 
+
 def shopping_cart_detail(request, pk):
     cart = ShoppingCart.objects.get(pk=pk)
     context = {'shopping_cart': cart}
-    return render(request , "shopping_cart/shopping_cart_detail.html", context)
+    return render(request, "shopping_cart/shopping_cart_detail.html", context)
+
+
+
 
 def add_to_cart(request):
     if request.method == "POST":
         form = CartForm(request.POST)
         if form.is_valid():
-            cart = form.save(commit=False)
+            product_id = form.cleaned_data['product']
+            quantity = form.cleaned_data['quantity']
+            product = get_object_or_404(Product, pk=product_id)
+            customer = request.user.customer  # Убедитесь, что у пользователя есть связанный покупатель
+            cart, created = ShoppingCart.objects.get_or_create(customer=customer, product=product, defaults={'quantity': 0})
+            cart.quantity += quantity
             cart.save()
+
+            # Уменьшаем количество товара на складе
+            inventory = Inventory.objects.get(product=product)
+            if inventory.quantity >= quantity:
+                inventory.quantity -= quantity
+                inventory.save()
+            else:
+                # Обработка случая, когда на складе недостаточно товара
+                return render(request, "shopping_cart/add_to_cart.html", {"form": form, "error": "Недостаточно товара на складе"})
+
             return redirect('shopping_cart_detail', pk=cart.pk)
     else:
         form = CartForm()
@@ -95,10 +120,12 @@ def order_list(request):
     context = {"orders": orders}
     return render(request, "orders/order_list.html", context)
 
+
 def order_detail(request, pk):
     order = Order.objects.get(pk=pk)
     context = {'order': order}
     return render(request, "orders/order_detail.html", context)
+
 
 def create_order(request):
     if request.method == "POST":
@@ -109,14 +136,18 @@ def create_order(request):
             order.status = "На рассмотрении"
             order.save()
 
-            # Уменьшение остатков после офрмления заказа
+            # Уменьшение остатков после оформления заказа
             product = order.product
-            inventory = get_object_or_404(Inventory, product= product)
-            inventory.quantity -= order.quantity
-            inventory.save()
+            inventory = get_object_or_404(Inventory, product=product)
+            if inventory.quantity >= order.quantity:
+                inventory.quantity -= order.quantity
+                inventory.save()
+            else:
+                # Обработка случая, когда на складе недостаточно товара
+                order.delete()
+                return render(request, "orders/create_order.html", {"form": form, "error": "Недостаточно товара на складе"})
 
             return redirect('order_detail', pk=order.pk)
     else:
         form = OrderForm()
-    return render(request, "orders/create_order.html",  {"form": form})
-
+    return render(request, "orders/create_order.html", {"form": form})

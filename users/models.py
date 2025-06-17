@@ -39,7 +39,7 @@ class Customer(models.Model):
         verbose_name_plural = "Customers"
 
 class Inventory(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
@@ -53,6 +53,10 @@ class ShoppingCart(models.Model):
     def __str__(self):
         return f"{self.customer} {self.product} {self.quantity}"
 
+    def add_item(self, quantity):
+        self.quantity += quantity
+        self.save()
+
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -60,6 +64,7 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, default="На рассмотрении")
     cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE, null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.customer} {self.product} {self.quantity}"
